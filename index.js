@@ -1,9 +1,39 @@
 const express = require("express");
 const userRouter = require("./routers/user");
 const movieRouter = require("./routers/movie.js");
+
+//pemanggilan dari controller hw 10
+const movies = require("./routers/moviesRouters");
+
+const multer = require("./utils/multer.js");
+
+const path = require("path");
 const PORT = 3000;
 const app = express();
+
+
 app.use(express.json());
+ 
+//app use untuk mvc
+app.use('/movies',movies)
+
+//app andpoint uppload
+app.put("/contact/upload", multer().single('photo'), (req,res)=> {
+    const file = req.file.path;
+
+    console.log(file);
+    if(!file){
+        return res.status(400).json({
+            status: false,
+            message: "No file selected",
+        });
+    }
+
+    res.send(file);
+});
+
+//menampilkan foto yg sudah di uppload
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 
 //SWAGGER
